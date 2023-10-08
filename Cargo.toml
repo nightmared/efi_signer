@@ -19,13 +19,13 @@ log = "0.4.17"
 md-5 = "0.10.5"
 openssl = "0.10.52"
 openssl-sys = "0.9.87"
-picky = { version = "7.0.0-rc.5", features = ["pkcs7", "wincert", "ec", "time_conversion", "ctl", "ctl_http_fetch"] }
-picky-asn1-x509 = "0.9.0"
+picky = { version = "7.0.0-rc.8", features = ["pkcs7", "wincert", "time_conversion"] }
+picky-asn1-x509 = "0.12.0"
 pkcs7 = "0.4.0"
 serde = "1.0.159"
 sha1 = "0.10.5"
 sha2 = "0.10.6"
-snafu = { version = "0.7.4", features = ["backtraces", "backtraces-impl-std", "unstable-provider-api"] }
+snafu = { version = "0.7.4", features = ["backtraces", "backtraces-impl-std"] }
 x509-cert = "0.2.1"
 
 

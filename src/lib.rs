@@ -13,20 +13,21 @@
  *  * // See the Mulan PSL v2 for more details.
  *
  */
-#![feature(cursor_remaining, buf_read_has_data_left)]
-#![feature(error_generic_member_access)]
-#![feature(provide_any)]
+//#![feature(cursor_remaining, buf_read_has_data_left)]
+//#![feature(error_generic_member_access)]
+//#![feature(provide_any)]
+//use crate::error::CertDecodeSnafu;
 use crate::error::{
-    AlgorithmSnafu, AuthenticodeSnafu, CertDecodeSnafu, ConvertPEM2PKCS7Snafu,
-    InvalidMagicInOptHdrSnafu, MissingOptHdrSnafu, NoDigestAlgoSnafu, OpenFileSnafu, PESnafu,
-    ParseCertificateSnafu, ParseImageSnafu, ParsePrivateKeySnafu, PemDecodeSnafu, PemFileSnafu,
-    ReadBtyeSnafu, ReadLeftDataSnafu, Result, WinCertSnafu, WriteBtyeSnafu,
+    AlgorithmSnafu, AuthenticodeSnafu, ConvertPEM2PKCS7Snafu, InvalidMagicInOptHdrSnafu,
+    MissingOptHdrSnafu, NoDigestAlgoSnafu, OpenFileSnafu, PESnafu, ParseCertificateSnafu,
+    ParseImageSnafu, ParsePrivateKeySnafu, PemDecodeSnafu, PemFileSnafu, ReadBtyeSnafu,
+    ReadLeftDataSnafu, Result, WinCertSnafu, WriteBtyeSnafu,
 };
 use byteorder::{LittleEndian, ReadBytesExt, WriteBytesExt};
 use der::{DecodePem, Encode};
 
 use digest::DynDigest;
-use error::{AuthenticodeVerifySnafu, CtlFetchSnafu, PemDecodeFromUTF8Snafu, ReadFileSnafu};
+//use error::{AuthenticodeVerifySnafu, CtlFetchSnafu, PemDecodeFromUTF8Snafu, ReadFileSnafu};
 use goblin::pe::data_directories::SIZEOF_DATA_DIRECTORY;
 use goblin::pe::header::{PE_MAGIC, SIZEOF_COFF_HEADER, SIZEOF_PE_MAGIC};
 use goblin::pe::optional_header::{
@@ -36,13 +37,14 @@ use goblin::pe::optional_header::{
 use goblin::pe::section_table::SectionTable;
 use goblin::pe::{data_directories::DataDirectory, PE};
 use log::{debug, warn};
-use picky::x509::Cert;
+//use picky::x509::Cert;
 
 use picky::key::PrivateKey;
 use picky::pem::Pem;
-use picky::x509::date::UtcDate;
+//use picky::x509::date::UtcDate;
 use picky::x509::pkcs7::authenticode::{AuthenticodeSignature, ShaVariant};
-use picky::x509::pkcs7::{ctl, ctl::http_fetch::CtlHttpFetch, Pkcs7};
+//use picky::x509::pkcs7::{Pkcs7};
+use picky::x509::pkcs7::Pkcs7;
 use picky::x509::wincert::{CertificateType, WinCertificate};
 
 use snafu::{OptionExt, ResultExt};
@@ -50,7 +52,8 @@ use snafu::{OptionExt, ResultExt};
 use cms::content_info::ContentInfo;
 
 use std::fmt::Display;
-use std::fs::{read, File};
+//use std::fs::read;
+use std::fs::File;
 use std::io::{BufRead, BufReader, Cursor};
 use std::mem;
 use std::path::{Path, PathBuf};
@@ -399,7 +402,11 @@ impl<'a> EfiImage<'a> {
             cert_table = Some(EfiImage::get_cert_table_section(pe, raw)?);
             // there maybe more than one signature
             // so we scan over all the cert table
-            while rdr.has_data_left().context(ReadLeftDataSnafu {})? {
+            while rdr
+                .fill_buf()
+                .map(|b| !b.is_empty())
+                .context(ReadLeftDataSnafu {})?
+            {
                 // “length” indicating the length of the structure, include the header itself
                 // so the length of the signed data should be length - 4 - 2 - 2
                 let length = rdr.read_u32::<LittleEndian>().context(ReadBtyeSnafu {
@@ -832,6 +839,7 @@ impl<'a> EfiImage<'a> {
         Ok(res)
     }
 
+    /*
     /// how to verify a signature against its binary
     /// refer from microsoft authenticode_pe.docx
     pub fn verify(&self, cas: Vec<String>) -> Result<()> {
@@ -874,6 +882,7 @@ impl<'a> EfiImage<'a> {
 
         Ok(())
     }
+    */
 
     pub fn sign_signature(
         &self,

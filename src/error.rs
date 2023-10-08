@@ -19,7 +19,7 @@ use picky::key::KeyError;
 use picky::pem::PemError;
 use picky::x509::certificate::CertError;
 use picky::x509::pkcs7::authenticode::AuthenticodeError;
-use picky::x509::pkcs7::ctl::CtlError;
+//use picky::x509::pkcs7::ctl::CtlError;
 use picky::x509::pkcs7::Pkcs7Error;
 use picky::x509::wincert::WinCertificateError;
 use picky_asn1_x509::algorithm_identifier::UnsupportedAlgorithmError;
@@ -45,8 +45,8 @@ pub(crate) enum InnerError {
     OpenFile { source: IoError, path: String },
     #[snafu(display("Failed to decode pem file {path}"))]
     PemFile { source: PemError, path: String },
-    #[snafu(display("Failed to fetch ctl from Microsoft"))]
-    CtlFetch { source: CtlError },
+    //#[snafu(display("Failed to fetch ctl from Microsoft"))]
+    //CtlFetch { source: CtlError },
     #[snafu(display("Missing optional header"))]
     MissingOptHdr {},
     #[snafu(display("Missing certificate table"))]
